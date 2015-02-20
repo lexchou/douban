@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>豆瓣 - [%activeGroup.displayName%]</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/bootstrap/css/douban.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="blog.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+       	[%FOREACH g IN groups%]<a class="blog-nav-item[%IF activeGroup == g %] active[%END%]" href="/douban/[%g.name%]">[%g.displayName%]</a>[%END%]
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="blog-header">
+        <h1 class="blog-title">[%activeGroup.displayName%]</h1>
+        <p class="lead blog-description"> 这是个一个爬虫，里面的所有图片均来自豆瓣小组  <a target="_blank" href="http://www.douban.com/group/[%activeGroup.name%]/discussion">[%activeGroup.displayName%]</a>。</p>
+      </div>
+
+      <div class="row">
+
+        <div class="blog-main" id='container2'>
+
+          <div class="blog-post" id='container'>
+          </div><!-- /.blog-post -->
+
+
+        </div><!-- /.blog-main -->
+
+      </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+    <script id='topic' type='text/template'>
+      <div class='topic-outer' id='to-{id}'>
+      <div class='topic'>
+          <img src='{thumbUrl}'/> 
+          <div> <a href='http://www.douban.com/group/topic/{id}/'>{title}</a> </div>
+          <div> by <a href='http://www.douban.com/group/people/{userId}/'>{userName}</a></div>
+          <div> {timestamp} </div>
+          <div class='action'><a href='javascript:removeTopic({id})' title='删除'><i class='glyphicon glyphicon-remove'></i></a></div>
+      </div>
+      </div>
+    </script>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/bootstrap/js/jquery.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/bootstrap/js/masonry.pkgd.min.js"></script>
+    <script>var currentGroup = "[%activeGroup.name%]", removeKey = '';</script>
+    <script src="/bootstrap/js/douban.js"></script>
+  </body>
+</html>

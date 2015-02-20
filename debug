@@ -1,0 +1,37 @@
+#!/bin/bash
+# Run this script to debug administration console
+# You'll no longer need to restart the service when server side has changes.
+#
+
+PID_FILE=service.pid
+MAIN=main.pl
+
+
+term() {
+    test -e $PID_FILE || return
+    pid=`cat $PID_FILE`
+    kill -s -0 $pid  || return
+    echo "Terminating $MAIN $pid \n"
+    rm -f $PID_FILE
+    kill $pid
+    wait $pid
+}
+
+trap "term;exit" SIGINT SIGTERM
+while true
+do
+    term
+    spawn-fcgi -n -a 127.0.0.1 -p 8184 -f ./$MAIN  &
+    pid=$!
+    echo $pid > $PID_FILE
+    echo "My Perl service started, pid = $pid"
+    files=`find . -name '*.pl' -o -name '*.pm' -o -name '*.html' | egrep -v '[#~]'`
+    md5=`md5sum $files|md5sum`
+#wait for file change
+    while [[ `md5sum $files|md5sum` = "$md5" ]]
+    do
+        sleep 1
+    done
+    echo "File changes detected, restarting service"
+done
+
