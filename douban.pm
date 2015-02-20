@@ -12,8 +12,9 @@ use Encode qw(decode_utf8);
 my $conf = LoadFile("config.yaml");
 
 my $dbh = DBI->connect("DBI:mysql:database=$conf->{database}->{schema};host=$conf->{database}->{host}", $conf->{database}->{user}, $conf->{database}->{password});
-
-my $tt = new Template({INCLUDE_PATH => 'templates', INTERPOLATE => 1});
+$dbh->{mysql_enable_utf8} = 1;
+$dbh->do("set names utf8;");
+my $tt = new Template({INCLUDE_PATH => 'templates', INTERPOLATE => 1, ENCODING => 'utf8'});
 
 sub getGroups
 {
@@ -46,7 +47,7 @@ sub group
     	$vars->{activeGroup} = $_ if $_->{name} eq $groupId;
     }
     
-    $tt->process('group.html', $vars, $output) || die $tt->error();
+    $tt->process('group.html', $vars, $output, binmode => ':utf8') || die $tt->error();
     print $output;
 }
 sub list

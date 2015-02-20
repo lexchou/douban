@@ -14,6 +14,8 @@ my $conf = LoadFile("config.yaml");
 
 my $ua = new LWP::UserAgent(agent => "$conf->{headers}->{'User-Agent'}");
 my $dbh = DBI->connect("DBI:mysql:database=$conf->{database}->{schema};host=$conf->{database}->{host}", $conf->{database}->{user}, $conf->{database}->{password});
+$dbh->{mysql_enable_utf8} = 1;
+$dbh->do('set names utf8;');
 sub get
 {
 	my ($url, $referer) = @_;
