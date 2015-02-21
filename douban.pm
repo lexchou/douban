@@ -62,6 +62,14 @@ sub list
 	{
 		$res = $dbh->selectall_arrayref("select topics.`id`, `timestamp`, `title`, people.name 'userName', people.id 'userId', `thumbUrl` 
 			from topics, people where topics.group = ? and topics.id < ? and topics.state = 2 and topics.author = people.id order by id desc limit ?", {Slice => {}}, $groupId, $since, $max);
+#my @thumbUrls = split /\n/, $res->{thumbUrl};
+        for(@$res)
+        {
+            my @thumbs = split /\n/, $_->{thumbUrl};
+            $_->{thumbUrls} = \@thumbs;
+            delete $_->{thumbUrl};
+        }
+#     $res->{thumbUrls} = \@thumbUrls;
 	}
 	print decode_utf8(encode_json({results => $res}));
 }
@@ -81,10 +89,19 @@ sub remove
 	router::LOG("Done");
 	print '{"success" : true}';
 }
+sub get_content
+{
+	my ($q, $groupName, $topicId) = @_;
+	print $q->header('text/html; charset = utf8');
+	my ($content) = $dbh->selectrow_array("SELECT `content` FROM `contents` WHERE `id` = ?", {}, $topicId);
+    print $content;
+}
+
 
 #router::add_rule('GET', '/douban', \&index);
 router::add_rule('GET', qr/^\/douban\/(\w+)$/, \&group);
 router::add_rule('GET', qr/^\/douban\/api\/(\w+)$/, \&list);
 router::add_rule('DELETE', qr/^\/douban\/api\/(\w+)\/(\d+)$/, \&remove);
+router::add_rule('GET', qr/^\/douban\/api\/(\w+)\/(\d+)$/, \&get_content);
 
 1;

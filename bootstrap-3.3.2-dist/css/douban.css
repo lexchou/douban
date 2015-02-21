@@ -183,10 +183,10 @@ border-radius: 4px;
 -o-transition: all .2s ease-in-out;
 transition: all .2s ease-in-out;
 }
-.topic > img
+.topic  img
 {
   display: block;
-width: 100% \9;
+width: 100%;
 max-width: 100%;
 height: auto;
 
@@ -203,3 +203,4 @@ display: none;
 {
 display: block; 
 }
+.modal-backdrop {position:fixed;}

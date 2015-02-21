@@ -57,7 +57,6 @@
     </div><!-- /.container -->
 
     <footer class="blog-footer">
-      <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
       <p>
         <a href="#">Back to top</a>
       </p>
@@ -65,15 +64,34 @@
     <script id='topic' type='text/template'>
       <div class='topic-outer' id='to-{id}'>
       <div class='topic'>
-          <img src='{thumbUrl}'/> 
+          <div>  {thumbs} </div>
           <div> <a href='http://www.douban.com/group/topic/{id}/'>{title}</a> </div>
           <div> by <a href='http://www.douban.com/group/people/{userId}/'>{userName}</a></div>
           <div> {timestamp} </div>
-          <div class='action'><a href='javascript:removeTopic({id})' title='删除'><i class='glyphicon glyphicon-remove'></i></a></div>
+          <div class='action'>
+              <a href='javascript:removeTopic({id})' title='删除'><i class='glyphicon glyphicon-remove'></i></a>
+              <a href='javascript:open({id})' title='打开'><i class='glyphicon glyphicon-zoom-in'></i></a>
+          </div>
       </div>
       </div>
     </script>
-
+<!-- Modal -->
+<div class="modal fade" id="post_detail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->

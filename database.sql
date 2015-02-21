@@ -17,7 +17,7 @@ CREATE TABLE `topics` (
 	`state` INT NOT NULL,
 	`pictures` INT NOT NULL,
 	`title` VARCHAR(100),
-	`thumbUrl` VARCHAR(100)
+	`thumbUrl` VARCHAR(300)
 ) ENGINE = InnoDB CHARSET = utf8;
 CREATE INDEX `group_state` ON `topics`(`group`, `state`);
 

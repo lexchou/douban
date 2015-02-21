@@ -62,7 +62,7 @@ sub dispatch
     my $method = $ENV{REQUEST_METHOD};
     my $uri = $ENV{REQUEST_URI};
     $uri =~ s/\?.*$//;
-    LOG "$method $uri";
+    LOG "$ENV{REMOTE_ADDR} $method $ENV{REQUEST_URI}";
     my ($handler, $args) = get_handler($method, $uri);
     eval
     {

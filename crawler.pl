@@ -9,9 +9,10 @@ use POSIX;
 use Date::Parse;
 use DBI;
 use YAML::XS qw(LoadFile);
+use List::MoreUtils qw(uniq);
 
 my $conf = LoadFile("config.yaml");
-
+binmode(STDOUT, ":utf8");
 my $ua = new LWP::UserAgent(agent => "$conf->{headers}->{'User-Agent'}");
 my $dbh = DBI->connect("DBI:mysql:database=$conf->{database}->{schema};host=$conf->{database}->{host}", $conf->{database}->{user}, $conf->{database}->{password});
 $dbh->{mysql_enable_utf8} = 1;
@@ -39,12 +40,14 @@ sub load_topic
 	my ($groupId, $topicId) = @_;
 	my $content = get("http://www.douban.com/group/topic/$topicId/", 'http://www.douban.com/group/$groupId/discussion');
 	my ($title) = $content =~ m/<title>\s*(.*)\s*<\/title>/g;
-	my @pictures = $content =~ m/http:\/\/img\d+.douban.com\/view\/group_topic\/large\/public\/\w+.jpg/g;
     my ($uid, $nick, $time) = $content =~ m/<a href="http:\/\/www.douban.com\/group\/people\/([\-\w]+)\/">([^<]+)<\/a>[^<]*<\/span>\s+<span class="color-green">([\s\-:\d]+)<\/span>/g;
     $content =~ s/^.*<div class="topic-content">\s*//smg;
     $content =~ s/<\/div>\s*<\/div>\s*<\/div>.*$//smg;
+    $content =~ s/<\/div>\s*<div class="topic-opt clearfix">.*//smg;
     $content =~ s/\r//smg;
     $content =~ s/>\s+</></smg;
+	my @pictures = $content =~ m/http:\/\/img\d+.douban.com\/view\/group_topic\/large\/public\/\w+.jpg/g;
+    @pictures = uniq(@pictures);
     print "No author id for http://www.douban.com/group/topic/$topicId/\n" unless $uid;
 	return {
 		title => $title,
@@ -67,9 +70,18 @@ while(1)
 			my ($exists) = $dbh->selectrow_array("SELECT COUNT(1) FROM `topics` WHERE `id` = ?", {}, $topicId);
 			next if $exists;
 			my $topic = load_topic($group, $topicId);
-		    my $pics = @{$topic->{pictures}};
+		    my $npics = @{$topic->{pictures}};
 		    $dbh->do("INSERT IGNORE INTO `people` VALUES(?, ?);", {}, $topic->{userId}, $topic->{userName});
-			$insert->execute($topicId, $group->{id}, $topic->{userId}, $topic->{timestamp}, $pics ? 2 : 3, $pics, $topic->{title}, $pics ? $topic->{pictures}->[0] : '');
+            if($npics)
+            {
+                my @pics = grep defined, @{$topic->{pictures}}[0..2];
+                print "save " . join("\n", @pics). "\n";
+                $insert->execute($topicId, $group->{id}, $topic->{userId}, $topic->{timestamp}, 2, $npics, $topic->{title}, join("\n", @pics));
+            }
+            else
+            {
+                $insert->execute($topicId, $group->{id}, $topic->{userId}, $topic->{timestamp}, 3, $npics, $topic->{title}, '');
+            }
 			$dbh->do("INSERT INTO `contents` VALUES(?, ?);", {}, $topicId, $topic->{content});
 			$total++;
 		}
