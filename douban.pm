@@ -9,6 +9,7 @@ use JSON;
 use utf8;
 use Encode qw(decode_utf8);
 
+-s "config.yaml" or die "Please rename config.yaml-template to config.yaml to start\n";
 my $conf = LoadFile("config.yaml");
 
 my $dbh = DBI->connect("DBI:mysql:database=$conf->{database}->{schema};host=$conf->{database}->{host}", $conf->{database}->{user}, $conf->{database}->{password});
@@ -77,16 +78,13 @@ sub remove
 {
 	my ($q, $groupName, $topicId) = @_;
 	print $q->header('application/json; charset = utf8');
-	my $key = $q->param('key');
-	router::LOG("remove name = $groupName, topicId = $topicId, key = $key");
+	my $key = $q->cookie('key');
 	if($key ne $conf->{removeKey})
 	{
-		router::LOG("Invalid key");
 		print '{"success" : false}';
 		return;
 	}
 	$dbh->do("UPDATE `topics` SET `state` = 3 WHERE `id` = ?", {}, $topicId);
-	router::LOG("Done");
 	print '{"success" : true}';
 }
 sub get_content

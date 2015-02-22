@@ -11,6 +11,7 @@ use DBI;
 use YAML::XS qw(LoadFile);
 use List::MoreUtils qw(uniq);
 
+-s "config.yaml" or die "Please rename config.yaml-template to config.yaml to start\n";
 my $conf = LoadFile("config.yaml");
 binmode(STDOUT, ":utf8");
 my $ua = new LWP::UserAgent(agent => "$conf->{headers}->{'User-Agent'}");
@@ -72,16 +73,8 @@ while(1)
 			my $topic = load_topic($group, $topicId);
 		    my $npics = @{$topic->{pictures}};
 		    $dbh->do("INSERT IGNORE INTO `people` VALUES(?, ?);", {}, $topic->{userId}, $topic->{userName});
-            if($npics)
-            {
-                my @pics = grep defined, @{$topic->{pictures}}[0..2];
-                print "save " . join("\n", @pics). "\n";
-                $insert->execute($topicId, $group->{id}, $topic->{userId}, $topic->{timestamp}, 2, $npics, $topic->{title}, join("\n", @pics));
-            }
-            else
-            {
-                $insert->execute($topicId, $group->{id}, $topic->{userId}, $topic->{timestamp}, 3, $npics, $topic->{title}, '');
-            }
+            my @pics = grep defined, @{$topic->{pictures}}[0..2];
+            $insert->execute($topicId, $group->{id}, $topic->{userId}, $topic->{timestamp}, $npics ? 2 : 3, $npics, $topic->{title}, join("\n", @pics));
 			$dbh->do("INSERT INTO `contents` VALUES(?, ?);", {}, $topicId, $topic->{content});
 			$total++;
 		}

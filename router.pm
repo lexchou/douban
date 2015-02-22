@@ -64,6 +64,7 @@ sub dispatch
     $uri =~ s/\?.*$//;
     LOG "$ENV{REMOTE_ADDR} $method $ENV{REQUEST_URI}";
     my ($handler, $args) = get_handler($method, $uri);
+    binmode STDOUT, ':encoding(UTF-8)';
     eval
     {
 	&$handler($q, @$args);

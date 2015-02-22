@@ -1,16 +1,21 @@
-var msnry = new Masonry(document.getElementById('container'), {columnWidth : 10});;
+var msnry = new Masonry(document.getElementById('container'), {columnWidth : 20});;
 var topics = {};
 var removeTopic = function(topic) {
 	if(!confirm("确定删除么？"))
 		return;
 	var n = document.getElementById('to-' + topic);
 	if(n) {
-		msnry.remove(n);
-		msnry.layout();
 		$.ajax({
 			url : '/douban/api/' + currentGroup + '/' + topic + '?key=' + removeKey,
 			type : 'DELETE',
-		});
+		}).done(function(ret) {
+            if(!ret.success) {
+                alert("只有管理员才能删除");
+                return;
+            }
+            msnry.remove(n);
+            msnry.layout();
+        });
 	}
 	return false;
 };
