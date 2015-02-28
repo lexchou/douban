@@ -6,7 +6,7 @@ var removeTopic = function(topic) {
 	var n = document.getElementById('to-' + topic);
 	if(n) {
 		$.ajax({
-			url : '/douban/api/' + currentGroup + '/' + topic + '?key=' + removeKey,
+			url : '/douban/api/' + currentGroup + '/' + topic,
 			type : 'DELETE',
 		}).done(function(ret) {
             if(!ret.success) {
@@ -44,7 +44,7 @@ $(function() {
 	    	var results = ret.results;
 	    	if(!results.length)
 	    		return;
-	    	var template = document.getElementById('topic').innerText;
+	    	var template = $('#topic').text();
 	    	var elements = [];
 	    	results.forEach(function(topic)
 	    	{
@@ -57,10 +57,16 @@ $(function() {
 	    			return topic[s];
 	    		}).replace(/^\s+|\s+$/gm, '');
 	    		var elem = $.parseHTML(s)[0];
+                topic.images = 0;
                 $('img', elem).each(function(idx, img) {
                     img.onload = function() {
-                        container.appendChild(elem);
-                        msnry.appended(elem);
+                        topic.images ++;
+                        if(topic.images == 1) {
+                            container.appendChild(elem);
+                            msnry.appended(elem);
+                        } else {
+                            msnry.layoutItems([elem], true);
+                        }
                     };
                 });
 	    		elements.push(elem);
@@ -71,7 +77,7 @@ $(function() {
 	loadMore();
 	$(window).scroll(function(e) {
 		var p = document.body.scrollTop / (document.body.scrollHeight - screen.height);
-		if(p > 0.9)
+		if(p > 0.7)
 			loadMore();
 	});
 

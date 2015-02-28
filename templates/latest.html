@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -9,7 +8,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>豆瓣 - [%activeGroup.displayName%]</title>
+    <title>豆瓣 - 最近更新</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -30,7 +29,6 @@
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-       	[%FOREACH g IN groups%]<a class="blog-nav-item[%IF activeGroup == g %] active[%END%]" href="/douban/[%g.name%]">[%g.displayName%]</a>[%END%]
         </nav>
       </div>
     </div>
@@ -38,8 +36,7 @@
     <div class="container">
 
       <div class="blog-header">
-        <h1 class="blog-title">[%activeGroup.displayName%]</h1>
-        <p class="lead blog-description"> 这是个一个爬虫，里面的所有图片均来自豆瓣小组  <a target="_blank" href="http://www.douban.com/group/[%activeGroup.name%]/discussion">[%activeGroup.displayName%]</a>。</p>
+        <h1 class="blog-title">最近更新的内容</h1>
         <p class="lead blog-description"> 本系统代码发布在 <a href=https://github.com/lexchou/douban target=_blank>github</a> 欢迎批评指教。</p>
       </div>
 
@@ -100,17 +97,7 @@
     <script src="/bootstrap/js/jquery.min.js"></script>
     <script src="/bootstrap/js/bootstrap.min.js"></script>
     <script src="/bootstrap/js/masonry.pkgd.min.js"></script>
-    <script>var currentGroup = "[%activeGroup.name%]", removeKey = '';</script>
+    <script>var currentGroup = "latest";</script>
     <script src="/bootstrap/js/douban.js"></script>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-40874561-3', 'auto');
-  ga('send', 'pageview');
-
-</script>
   </body>
 </html>
